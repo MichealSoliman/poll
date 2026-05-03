@@ -130,6 +130,13 @@
         .fade-in {
             animation: fadeIn 0.5s ease forwards;
         }
+        
+        /* تلميح لرقم الجوال */
+        .phone-hint {
+            font-size: 11px;
+            color: #9ca3af;
+            margin-top: 5px;
+        }
     </style>
 </head>
 <body>
@@ -258,15 +265,16 @@
                 <div id="error7" class="text-red-500 text-sm mt-1 hidden">الرجاء إدخال الاسم</div>
             </div>
 
-            <!-- سؤال 8: الرقم -->
+            <!-- سؤال 8: الرقم (أي رقم من أي دولة) -->
             <div class="mb-6">
                 <label class="block text-gray-800 font-bold mb-2 required">8. رقم الجوال</label>
                 <div class="relative">
                     <i class="fas fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
                     <input type="tel" id="phone" name="phone" 
                            class="form-input w-full pr-12 pl-4 py-3 rounded-xl border"
-                           placeholder="05xxxxxxxx" required>
+                           placeholder="مثال: 01210568977 أو +9665xxxxxxxx" required>
                 </div>
+                <div class="phone-hint">📱 يمكنك إدخال أي رقم من أي دولة (مصر، السعودية، الإمارات، الكويت، ...)</div>
                 <div id="error8" class="text-red-500 text-sm mt-1 hidden">الرجاء إدخال رقم جوال صحيح</div>
             </div>
 
@@ -318,7 +326,7 @@
             </button>
             
             <p class="text-center text-gray-400 text-xs mt-4">
-                <i class="fas fa-lock"></i> سيتم إرسال بياناتك بشكل آمن عبر واتساب
+                <i class="fas fa-lock"></i> سيتم إرسال بياناتك بشكل آمن عبر واتساب إلى الرقم 01210568977
             </p>
         </form>
     </div>
@@ -331,8 +339,8 @@
 </div>
 
 <script>
-    // رقم الواتساب المستهدف
-    const WHATSAPP_NUMBER = "01210568977"; // بدون +
+    // رقم الواتساب المستهدف (مصر)
+    const WHATSAPP_NUMBER = "201210568977"; // بدون + (كود مصر 2012...)
     
     // تهيئة نجوم التقييم
     function initRatingStars(containerId, hiddenInputId) {
@@ -368,7 +376,7 @@
     initRatingStars('rating2', 'employee_deal');
     initRatingStars('rating3', 'procedures');
     
-    // التحقق من صحة النموذج
+    // التحقق من صحة النموذج (بدون قيود على رقم الجوال)
     function validateForm() {
         let isValid = true;
         
@@ -377,18 +385,24 @@
         if (!experience) {
             document.getElementById('error1').classList.remove('hidden');
             isValid = false;
+        } else {
+            document.getElementById('error1').classList.add('hidden');
         }
         
         const employeeDeal = document.getElementById('employee_deal').value;
         if (!employeeDeal) {
             document.getElementById('error2').classList.remove('hidden');
             isValid = false;
+        } else {
+            document.getElementById('error2').classList.add('hidden');
         }
         
         const procedures = document.getElementById('procedures').value;
         if (!procedures) {
             document.getElementById('error3').classList.remove('hidden');
             isValid = false;
+        } else {
+            document.getElementById('error3').classList.add('hidden');
         }
         
         // التحقق من السعر
@@ -420,10 +434,9 @@
             document.getElementById('name').classList.remove('error-border');
         }
         
-        // التحقق من رقم الجوال
+        // التحقق من رقم الجوال (أي رقم غير فارغ فقط)
         const phone = document.getElementById('phone').value.trim();
-        const phoneRegex = /^(05|5|\+9665)[0-9]{8}$/;
-        if (!phone || !phoneRegex.test(phone.replace(/\s/g, ''))) {
+        if (!phone) {
             document.getElementById('error8').classList.remove('hidden');
             document.getElementById('phone').classList.add('error-border');
             isValid = false;
@@ -442,6 +455,12 @@
         }
         
         return isValid;
+    }
+    
+    // تنظيف رقم الجوال للعرض فقط (بدون تحقق)
+    function cleanPhoneNumber(phone) {
+        // فقط نزيل المسافات والشرطات
+        return phone.replace(/[\s\-\(\)]/g, '');
     }
     
     // جمع بيانات النموذج
@@ -520,7 +539,7 @@
             sendToWhatsApp();
             showToast();
             
-            // optional: reset form after 2 seconds
+            // reset form after 2 seconds
             setTimeout(() => {
                 document.getElementById('surveyForm').reset();
                 // إعادة تعيين النجوم
@@ -543,8 +562,10 @@
     });
     
     document.getElementById('phone').addEventListener('input', function() {
-        this.classList.remove('error-border');
-        document.getElementById('error8').classList.add('hidden');
+        if (this.value.trim()) {
+            this.classList.remove('error-border');
+            document.getElementById('error8').classList.add('hidden');
+        }
     });
 </script>
 
