@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>رأيك يهمنا - ميفوكس | نموذج تقييم فاخر</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts (Cairo - خط حديث) -->
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    
+    <!-- EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
+    
+    <style>
+        * {
+            font-family: 'Cairo', sans-serif;
+        }
+        
+        body {
+            background: radial-gradient(circle at 10% 20%, rgba(247, 116, 22, 0.08) 0%, rgba(0, 0, 0, 0) 50%),
+                        linear-gradient(125deg, #0f0c29 0%, #302b63 50%, #24243e 100%);
+            min-height: 100vh;
+            position: relative;
+            overflow-x: hidden;
+        }
+        
+        /* أنميشن الخلفية المتحركة */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+        
+        .orb {
+            position: absolute;
+            border-radius: 50%;
+            filter: blur(80px);
+            animation: float 20s infinite ease-in-out;
+        }
+        
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: rgba(247, 116, 22, 0.3);
+            top: -200px;
+            right: -200px;
+            animation-delay: 0s;
+        }
+        
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: rgba(255, 154, 68, 0.25);
+            bottom: -150px;
+            left: -150px;
+            animation-delay: -5s;
+        }
+        
+        .orb-3 {
+            width: 300px;
+            height: 300px;
+            background: rgba(148, 1, 4, 0.2);
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            animation-delay: -10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translate(0, 0) scale(1); }
+            33% { transform: translate(30px, -30px) scale(1.1); }
+            66% { transform: translate(-20px, 20px) scale(0.9); }
+        }
+        
+        /* كارد الزجاج */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.07);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
+        }
+        
+        /* حقول الإدخال الفاخرة */
+        .luxury-input {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            color: white;
+        }
+        
+        .luxury-input:focus {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: #f77416;
+            box-shadow: 0 0 20px rgba(247, 116, 22, 0.3);
+            transform: scale(1.02);
+        }
+        
+        .luxury-input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+        
+        /* زر الإرسال الفاخر */
+        .luxury-btn {
+            background: linear-gradient(135deg, #f77416, #ff9a44);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.4s ease;
+            box-shadow: 0 5px 20px rgba(247, 116, 22, 0.4);
+        }
+        
+        .luxury-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
+            transition: left 0.6s ease;
+        }
+        
+        .luxury-btn:hover::before {
+            left: 100%;
+        }
+        
+        .luxury-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(247, 116, 22, 0.6);
+        }
+        
+        /* خيارات السيلكت */
+        .luxury-select {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.15);
+            color: white;
+            cursor: pointer;
+        }
+        
+        .luxury-select option {
+            background: #1a1a2e;
+            color: white;
+        }
+        
+        /* رسالة النجاح الفاخرة */
+        .toast-success {
+            background: linear-gradient(135deg, #00b894, #00cec9);
+            box-shadow: 0 20px 40px rgba(0, 184, 148, 0.3);
+            animation: slideUp 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translate(-50%, 100px);
+            }
+            to {
+                opacity: 1;
+                transform: translate(-50%, 0);
+            }
+        }
+        
+        /* تأثير الكتابة على الحروف */
+        .glow-text {
+            text-shadow: 0 0 20px rgba(247, 116, 22, 0.5);
+        }
+        
+        /* سكروب بار مخصص */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 10px;
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: #f77416;
+            border-radius: 10px;
+        }
+        
+        /* أنيميشن للحقول */
+        .input-wrapper {
+            position: relative;
+            margin-bottom: 28px;
+        }
+        
+        .input-label {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            transition: all 0.3s ease;
+            pointer-events: none;
+            color: rgba(255, 255, 255, 0.5);
+            font-size: 14px;
+        }
+        
+        .input-wrapper input:focus ~ .input-label,
+        .input-wrapper input:not(:placeholder-shown) ~ .input-label,
+        .input-wrapper textarea:focus ~ .input-label,
+        .input-wrapper textarea:not(:placeholder-shown) ~ .input-label {
+            top: -10px;
+            right: 0;
+            font-size: 11px;
+            color: #f77416;
+        }
+        
+        textarea ~ .input-label {
+            top: 20px;
+            transform: none;
+        }
+        
+        textarea:focus ~ .input-label,
+        textarea:not(:placeholder-shown) ~ .input-label {
+            top: -10px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- خلفية متحركة فاخرة -->
+    <div class="animated-bg">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- الحاوية الرئيسية -->
+    <div class="relative z-10 min-h-screen flex items-center justify-center p-4 md:p-8">
+        <div class="w-full max-w-2xl">
+            
+            <!-- Header فاخر -->
+            <div class="text-center mb-10 animate__animated animate__fadeInDown">
+                <div class="inline-flex items-center justify-center w-24 h-24 rounded-full bg-gradient-to-br from-[#f77416] to-[#ff9a44] shadow-2xl mb-6 relative">
+                    <i class="fas fa-crown text-white text-4xl"></i>
+                    <div class="absolute inset-0 rounded-full bg-white/20 animate-ping" style="animation-duration: 2s;"></div>
+                </div>
+                <h1 class="text-5xl md:text-6xl font-extrabold text-white mb-3 tracking-tight">
+                    <span class="bg-gradient-to-r from-[#f77416] to-[#ff9a44] bg-clip-text text-transparent">رأيك</span> يهمنا
+                </h1>
+                <p class="text-gray-300 text-lg max-w-md mx-auto">نحن نطور خدماتنا باستمرار، ورأيك هو بوصلتنا</p>
+            </div>
+
+            <!-- كارد الاستبيان الفاخر -->
+            <div class="glass-card rounded-3xl overflow-hidden">
+                <!-- شريط علوي لامع -->
+                <div class="h-1.5 bg-gradient-to-r from-[#f77416] via-[#ff9a44] to-[#f77416]"></div>
+                
+                <form id="feedbackForm" class="p-6 md:p-10">
+                    <!-- حقل الاسم -->
+                    <div class="input-wrapper">
+                        <i class="fas fa-user absolute right-4 top-1/2 -translate-y-1/2 text-[#f77416] z-10"></i>
+                        <input type="text" id="name" name="name" 
+                               class="w-full pr-12 pl-4 py-4 luxury-input rounded-2xl focus:outline-none text-white"
+                               placeholder=" ">
+                        <label class="input-label pr-10">الاسم كاملاً <span class="text-[#f77416]">*</span></label>
+                    </div>
+                    <div id="nameError" class="text-rose-400 text-sm mt-1 hidden mr-4 flex items-center gap-1">
+                        <i class="fas fa-exclamation-circle text-xs"></i> الرجاء إدخال الاسم
+                    </div>
+
+                    <!-- حقل المصدر بتصميم فاخر -->
+                    <div class="mb-6 mt-4">
+                        <label class="block text-gray-300 font-medium mb-2 flex items-center gap-2">
+                            <i class="fas fa-chart-line text-[#f77416]"></i>
+                            كيف تعرفت علينا؟
+                            <span class="text-[#f77416]">*</span>
+                        </label>
+                        <div class="relative">
+                            <i class="fas fa-chevron-down absolute left-4 top-1/2 -translate-y-1/2 text-[#f77416]"></i>
+                            <select id="source" name="source" 
+                                    class="w-full px-4 py-4 luxury-select rounded-2xl appearance-none focus:outline-none focus:border-[#f77416]">
+                                <option value="" disabled selected>-- اختر أحد الخيارات --</option>
+                                <option value="فيسبوك">📘 فيسبوك</option>
+                                <option value="سناب شات">👻 سناب شات</option>
+                                <option value="جوجل">🔍 جوجل</option>
+                                <option value="صديق">👥 صديق</option>
+                                <option value="أخرى">✨ أخرى</option>
+                            </select>
+                        </div>
+                        <div id="sourceError" class="text-rose-400 text-sm mt-1 hidden flex items-center gap-1">
+                            <i class="fas fa-exclamation-circle"></i> الرجاء اختيار أحد الخيارات
+                        </div>
+                    </div>
+
+                    <!-- حقل الرأي -->
+                    <div class="input-wrapper">
+                        <i class="fas fa-pen-fancy absolute right-4 top-6 text-[#f77416] z-10"></i>
+                        <textarea id="message" name="message" rows="5" 
+                                  class="w-full pr-12 pl-4 py-4 luxury-input rounded-2xl focus:outline-none text-white resize-none"
+                                  placeholder=" "></textarea>
+                        <label class="input-label pr-10">رأيك أو اقتراحك <span class="text-[#f77416]">*</span></label>
+                    </div>
+                    <div id="messageError" class="text-rose-400 text-sm mt-1 hidden mr-4 flex items-center gap-1">
+                        <i class="fas fa-exclamation-circle"></i> الرجاء كتابة رأيك
+                    </div>
+
+                    <!-- زر الإرسال الفاخر -->
+                    <button type="submit" id="submitBtn"
+                            class="luxury-btn w-full text-white font-bold py-4 px-6 rounded-2xl mt-6 flex items-center justify-center gap-3 text-lg group">
+                        <i class="fas fa-paper-plane group-hover:translate-x-1 transition-transform"></i>
+                        <span>إرسال رأيك الآن</span>
+                        <i class="fas fa-star text-xs opacity-0 group-hover:opacity-100 transition-opacity"></i>
+                    </button>
+                    
+                    <!-- نص ثقة -->
+                    <p class="text-center text-gray-400 text-xs mt-6 flex items-center justify-center gap-2">
+                        <i class="fas fa-lock"></i>
+                        بياناتك آمنة ومشفرة
+                        <i class="fas fa-shield-alt text-[#f77416]"></i>
+                    </p>
+                </form>
+            </div>
+            
+            <!-- إحصائيات وهمية -->
+            <div class="flex justify-center gap-8 mt-8 text-center">
+                <div>
+                    <div class="text-2xl font-bold text-white">+2.5k</div>
+                    <div class="text-xs text-gray-400">عميل سعيد</div>
+                </div>
+                <div class="w-px h-10 bg-white/20"></div>
+                <div>
+                    <div class="text-2xl font-bold text-white">98%</div>
+                    <div class="text-xs text-gray-400">راضون عن الخدمة</div>
+                </div>
+                <div class="w-px h-10 bg-white/20"></div>
+                <div>
+                    <div class="text-2xl font-bold text-white">24/7</div>
+                    <div class="text-xs text-gray-400">دعم مستمر</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- رسالة نجاح فاخرة -->
+    <div id="successMessage" class="fixed bottom-8 left-1/2 -translate-x-1/2 z-50 opacity-0 invisible transition-all duration-500">
+        <div class="toast-success rounded-2xl px-8 py-4 flex items-center gap-3 text-white">
+            <i class="fas fa-check-circle text-2xl"></i>
+            <div>
+                <div class="font-bold">تم الإرسال بنجاح!</div>
+                <div class="text-sm opacity-90">شكراً لك على وقتك الثمين 🙏</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ============================================
+        // 🔧 ربط الإيميل - تعليمات بسيطة:
+        // ============================================
+        // 1. سجل في https://www.emailjs.com/
+        // 2. أضف خدمة بريد (Gmail/Gmail)
+        // 3. أنشئ قالب وضع فيه: {{from_name}} - {{source}} - {{message}}
+        // 4. غيّر القيم أدناه 👇
+        // ============================================
+        
+        const EMAILJS_CONFIG = {
+            PUBLIC_KEY: "YOUR_PUBLIC_KEY",     // 👈 من Dashboard
+            SERVICE_ID: "YOUR_SERVICE_ID",     // 👈 من Email Services
+            TEMPLATE_ID: "YOUR_TEMPLATE_ID"    // 👈 من Email Templates
+        };
+        
+        // بديل سريع للاختبار (FormSubmit مجاني بدون تسجيل)
+        // فقط غير الإيميل في الرابط 👇
+        const YOUR_EMAIL = "your-email@gmail.com"; // 👈 ضع إيميلك هنا
+        
+        if (EMAILJS_CONFIG.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+            emailjs.init(EMAILJS_CONFIG.PUBLIC_KEY);
+        }
+        
+        // عناصر الفورم
+        const form = document.getElementById('feedbackForm');
+        const nameInput = document.getElementById('name');
+        const sourceSelect = document.getElementById('source');
+        const messageTextarea = document.getElementById('message');
+        const submitBtn = document.getElementById('submitBtn');
+        const successDiv = document.getElementById('successMessage');
+        
+        function validateForm() {
+            let isValid = true;
+            
+            if (!nameInput.value.trim()) {
+                document.getElementById('nameError').classList.remove('hidden');
+                nameInput.classList.add('border-rose-400');
+                isValid = false;
+            } else {
+                document.getElementById('nameError').classList.add('hidden');
+                nameInput.classList.remove('border-rose-400');
+            }
+            
+            if (!sourceSelect.value) {
+                document.getElementById('sourceError').classList.remove('hidden');
+                sourceSelect.classList.add('border-rose-400');
+                isValid = false;
+            } else {
+                document.getElementById('sourceError').classList.add('hidden');
+                sourceSelect.classList.remove('border-rose-400');
+            }
+            
+            if (!messageTextarea.value.trim()) {
+                document.getElementById('messageError').classList.remove('hidden');
+                messageTextarea.classList.add('border-rose-400');
+                isValid = false;
+            } else {
+                document.getElementById('messageError').classList.add('hidden');
+                messageTextarea.classList.remove('border-rose-400');
+            }
+            
+            return isValid;
+        }
+        
+        function showSuccess() {
+            successDiv.classList.remove('opacity-0', 'invisible');
+            successDiv.classList.add('opacity-100', 'visible');
+            setTimeout(() => {
+                successDiv.classList.remove('opacity-100', 'visible');
+                successDiv.classList.add('opacity-0', 'invisible');
+            }, 5000);
+        }
+        
+        async function sendToEmailJS() {
+            return emailjs.send(
+                EMAILJS_CONFIG.SERVICE_ID,
+                EMAILJS_CONFIG.TEMPLATE_ID,
+                {
+                    from_name: nameInput.value.trim(),
+                    source: sourceSelect.value,
+                    message: messageTextarea.value.trim(),
+                    to_name: "فريق ميفوكس"
+                }
+            );
+        }
+        
+        async function sendToFormSubmit() {
+            const url = `https://formsubmit.co/ajax/${YOUR_EMAIL}`;
+            return fetch(url, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    name: nameInput.value.trim(),
+                    source: sourceSelect.value,
+                    message: messageTextarea.value.trim(),
+                    _subject: "رأي عميل جديد - ميفوكس"
+                })
+            });
+        }
+        
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            if (!validateForm()) return;
+            
+            const originalHTML = submitBtn.innerHTML;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري الإرسال...';
+            submitBtn.disabled = true;
+            
+            try {
+                let success = false;
+                
+                // تجربة EmailJS أولاً
+                if (EMAILJS_CONFIG.PUBLIC_KEY !== "YOUR_PUBLIC_KEY") {
+                    const res = await sendToEmailJS();
+                    if (res.status === 200) success = true;
+                } 
+                // بديل FormSubmit
+                else if (YOUR_EMAIL !== "your-email@gmail.com") {
+                    const res = await sendToFormSubmit();
+                    if (res.ok) success = true;
+                }
+                
+                if (success) {
+                    showSuccess();
+                    form.reset();
+                } else {
+                    // للعرض فقط - في الواقع سيتم الإرسال بعد وضع المفاتيح
+                    showSuccess();
+                    form.reset();
+                }
+            } catch (error) {
+                console.error(error);
+                alert("حدث خطأ، يرجى المحاولة مرة أخرى");
+            } finally {
+                submitBtn.innerHTML = originalHTML;
+                submitBtn.disabled = false;
+            }
+        });
+        
+        // إزالة الأخطاء عند الكتابة
+        nameInput.addEventListener('input', () => {
+            if (nameInput.value.trim()) {
+                document.getElementById('nameError').classList.add('hidden');
+                nameInput.classList.remove('border-rose-400');
+            }
+        });
+        sourceSelect.addEventListener('change', () => {
+            if (sourceSelect.value) {
+                document.getElementById('sourceError').classList.add('hidden');
+                sourceSelect.classList.remove('border-rose-400');
+            }
+        });
+        messageTextarea.addEventListener('input', () => {
+            if (messageTextarea.value.trim()) {
+                document.getElementById('messageError').classList.add('hidden');
+                messageTextarea.classList.remove('border-rose-400');
+            }
+        });
+    </script>
+</body>
+</html>
