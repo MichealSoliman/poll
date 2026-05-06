@@ -206,7 +206,6 @@
                            class="form-input w-full pr-12 pl-4 py-3 rounded-xl border"
                            placeholder="مثال: 5000" step="0.01">
                 </div>
-                <p class="text-xs text-gray-400 mt-1">يمكنك تركها فارغة إذا لم تكن مهتماً</p>
             </div>
 
             <!-- سؤال 5: السعر مناسب؟ -->
@@ -254,7 +253,7 @@
             </div>
 
             <!-- سؤال 7: الاسم -->
-            <div class="mb-6">
+            <!-- <div class="mb-6">
                 <label class="block text-gray-800 font-bold mb-2 required">7. الاسم</label>
                 <div class="relative">
                     <i class="fas fa-user absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -263,10 +262,10 @@
                            placeholder="أدخل اسمك كاملاً" required>
                 </div>
                 <div id="error7" class="text-red-500 text-sm mt-1 hidden">الرجاء إدخال الاسم</div>
-            </div>
+            </div> -->
 
             <!-- سؤال 8: الرقم (أي رقم من أي دولة) -->
-            <div class="mb-6">
+            <!-- <div class="mb-6">
                 <label class="block text-gray-800 font-bold mb-2 required">8. رقم الجوال</label>
                 <div class="relative">
                     <i class="fas fa-phone absolute right-4 top-1/2 -translate-y-1/2 text-gray-400"></i>
@@ -276,7 +275,7 @@
                 </div>
                 <div class="phone-hint">📱 يمكنك إدخال أي رقم من أي دولة (مصر، السعودية، الإمارات، الكويت، ...)</div>
                 <div id="error8" class="text-red-500 text-sm mt-1 hidden">الرجاء إدخال رقم جوال صحيح</div>
-            </div>
+            </div> -->
 
             <!-- سؤال 9: كيف حصلت علينا -->
              <div class="mb-8">
@@ -334,7 +333,6 @@
             </button>
             
             <p class="text-center text-gray-400 text-xs mt-4">
-                <i class="fas fa-lock"></i> سيتم إرسال بياناتك بشكل آمن عبر واتساب إلى الرقم 01210568977
             </p>
         </form>
     </div>
@@ -431,27 +429,27 @@
             document.getElementById('error6').classList.add('hidden');
         }
         
-        // التحقق من الاسم
-        const name = document.getElementById('name').value.trim();
-        if (!name) {
-            document.getElementById('error7').classList.remove('hidden');
-            document.getElementById('name').classList.add('error-border');
-            isValid = false;
-        } else {
-            document.getElementById('error7').classList.add('hidden');
-            document.getElementById('name').classList.remove('error-border');
-        }
+        // // التحقق من الاسم
+        // const name = document.getElementById('name').value.trim();
+        // if (!name) {
+        //     document.getElementById('error7').classList.remove('hidden');
+        //     document.getElementById('name').classList.add('error-border');
+        //     isValid = false;
+        // } else {
+        //     document.getElementById('error7').classList.add('hidden');
+        //     document.getElementById('name').classList.remove('error-border');
+        // }
         
-        // التحقق من رقم الجوال (أي رقم غير فارغ فقط)
-        const phone = document.getElementById('phone').value.trim();
-        if (!phone) {
-            document.getElementById('error8').classList.remove('hidden');
-            document.getElementById('phone').classList.add('error-border');
-            isValid = false;
-        } else {
-            document.getElementById('error8').classList.add('hidden');
-            document.getElementById('phone').classList.remove('error-border');
-        }
+        // // التحقق من رقم الجوال (أي رقم غير فارغ فقط)
+        // const phone = document.getElementById('phone').value.trim();
+        // if (!phone) {
+        //     document.getElementById('error8').classList.remove('hidden');
+        //     document.getElementById('phone').classList.add('error-border');
+        //     isValid = false;
+        // } else {
+        //     document.getElementById('error8').classList.add('hidden');
+        //     document.getElementById('phone').classList.remove('error-border');
+        // }
         
         // التحقق من المصدر
         const sourceSelected = document.querySelector('input[name="source"]:checked');
@@ -465,11 +463,11 @@
         return isValid;
     }
     
-    // تنظيف رقم الجوال للعرض فقط (بدون تحقق)
-    function cleanPhoneNumber(phone) {
-        // فقط نزيل المسافات والشرطات
-        return phone.replace(/[\s\-\(\)]/g, '');
-    }
+    // // تنظيف رقم الجوال للعرض فقط (بدون تحقق)
+    // function cleanPhoneNumber(phone) {
+    //     // فقط نزيل المسافات والشرطات
+    //     return phone.replace(/[\s\-\(\)]/g, '');
+    // }
     
     // جمع بيانات النموذج
     function collectFormData() {
@@ -479,8 +477,8 @@
         const bookingValue = document.getElementById('booking_value').value || "لم يحدد";
         const price = document.querySelector('input[name="price"]:checked')?.value || "";
         const recommend = document.querySelector('input[name="recommend"]:checked')?.value || "";
-        const name = document.getElementById('name').value.trim();
-        const phone = document.getElementById('phone').value.trim();
+        // const name = document.getElementById('name').value.trim();
+        // const phone = document.getElementById('phone').value.trim();
         const source = document.querySelector('input[name="source"]:checked')?.value || "";
         
         // تعيين التقييمات بالنصوص
@@ -501,8 +499,8 @@
         // بناء رسالة الواتساب
         const message = `📋 *استبيان رضا العملاء - وكالة روز *
 ━ ━ ━ ━ ━ ━ ━ ━ ━
-👤 *الاسم:* ${name}
-📱 *الجوال:* ${phone}
+
+
 📅 *التاريخ:* ${dateStr}
 
 ━ ━ ━ ━ ━ ━ ━ ━ ━
